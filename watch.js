@@ -13,7 +13,7 @@ var chalk = require('chalk');
 var async = require('async');
 var moment = require('moment');
 var ts = require('gulp-typescript');
-var tsOptions = {noImplicitAny: true};
+var tsOptions = {noImplicitAny: true, lib: ["es2015", "es2017", "dom"]};
 
 var warnings = [
 	/Error TS2339/ /* property ___ does not exist on type ___ */
