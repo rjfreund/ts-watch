@@ -7,6 +7,7 @@ var buffer = require('vinyl-buffer');
 var source = require("vinyl-source-stream");
 var sourcemaps = require('gulp-sourcemaps');
 var tap = require('gulp-tap');
+var appRootDir = require('app-root-path');
 var glob = require('glob-all');
 var chalk = require('chalk');
 var async = require('async');
@@ -18,26 +19,24 @@ var warnings = [
 	/Error TS2339/ /* property ___ does not exist on type ___ */
 ];
 var errors = [];
-var inputPath = (process.argv[2]) ? process.argv[2]+'/' : "";
-if (!nodePath.isAbsolute(inputPath)){ inputPath = nodePath.resolve(process.cwd(), inputPath)+'/'; }
-
-var fileTypes = [inputPath+'/**/*.ts'];
-glob(fileTypes.concat(['!'+inputPath+'node_modules/**/*.ts']), function(err, paths){
+//TODO: still need to write the logic for using typescript with *.viewmodel.ts files - get rid of bundling and use gulp-typescript instead
+var fileTypes = ['**/*.ts'];
+glob(fileTypes.concat(['!node_modules/**/*.ts']), function(err, paths){
     if (err){ console.log(chalk.red(err)); return; }
     async.each(paths, function(path){ writeJSFile(path); });
 });
 
 console.log("watching "+fileTypes+" file types");
-chokidar.watch(fileTypes, {ignored: 'node_modules'})
+chokidar.watch(fileTypes, {ignored: /^node_modules.*/})
     .on('add', writeJSFile)
     .on('change', writeJSFile);
 
 function writeJSFile(path){
+    path = appRootDir+nodePath.sep+path;
     var pathObj = nodePath.parse(path);
     var outputFileName = pathObj.dir+nodePath.sep+pathObj.name + ".js";
     if (path.indexOf('client.ts')>-1){ 
-        //browserify(path, {debug: true, basedir: '.'})
-        browserify(path, {debug: true, basedir: inputPath})
+        browserify(path, {debug: true, basedir: '.'})
         .plugin(tsify, tsOptions) 
         .bundle()
         .on('error', function(err){
@@ -51,8 +50,7 @@ function writeJSFile(path){
         }).pipe(source(outputFileName))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
-        //.pipe(sourcemaps.write('./'))
-		.pipe(sourcemaps.write(nodePath.dirname(path)))
+        .pipe(sourcemaps.write('./'))
         .pipe(tap(function(file, t){
                 console.log(chalk.green(file.path + "\twritten\t"+moment().format()));
                 return t.through(gulp.dest, ['.']);
@@ -71,8 +69,7 @@ function writeJSFile(path){
                     console.error(chalk.red(err.message)); 
             })
             .pipe(sourcemaps.init({loadMaps: true}))
-            //.pipe(sourcemaps.write(nodePath.dirname(path)))
-            .pipe(sourcemaps.write('./'))
+            .pipe(sourcemaps.write(nodePath.dirname(path)))
             .pipe(tap(function(file, t){
                     console.log(chalk.green(file.path + "\twritten\t"+moment().format()));
                     return t.through(gulp.dest, [nodePath.dirname(path)]);
@@ -88,4 +85,5 @@ function writeJSFile(path){
         }
     }
     else {console.log(chalk.red('not sure how to build this file: '+path)); return;}
+
 }	
