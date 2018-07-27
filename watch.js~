@@ -22,7 +22,8 @@ var inputPath = (process.argv[2]) ? process.argv[2]+'/' : "";
 if (!nodePath.isAbsolute(inputPath)){ inputPath = nodePath.resolve(process.cwd(), inputPath)+'/'; }
 
 var fileTypes = [inputPath+'/**/*.ts'];
-glob(fileTypes.concat(['!'+inputPath+'node_modules/**/*.ts']), function(err, paths){
+//glob(fileTypes.concat(['!'+inputPath+'node_modules/**/*.ts']), function(err, paths){
+glob(fileTypes, function(err, paths){
     if (err){ console.log(chalk.red(err)); return; }
     async.each(paths, function(path){ writeJSFile(path); });
 });
