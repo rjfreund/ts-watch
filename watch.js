@@ -23,7 +23,7 @@ var errors = [];
 var fileTypes = ['**/*.ts'];
 glob(fileTypes.concat(['!node_modules/**/*.ts']), function(err, paths){
     if (err){ console.log(chalk.red(err)); return; }
-    async.each(paths, function(path){ writeJSFile(path); });
+    //async.each(paths, function(path){ writeJSFile(path); });
 });
 
 console.log("watching "+fileTypes+" file types");
