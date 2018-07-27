@@ -1,0 +1,26 @@
+{
+  "name": "watch",
+  "version": "1.0.0",
+  "description": "typescript compiler and watcher",
+  "main": "watch.js",
+  "repository": "https://github.com/rjfreund/ts-watch.git",
+  "author": "R.J. Freund (robert.joseph.freund@gmail.com)",
+  "license": "MIT",
+  "dependencies": {
+    "app-root-path": "^2.1.0",
+    "async": "^2.6.1",
+    "browserify": "^16.2.2",
+    "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
+    "glob-all": "^3.1.0",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-tap": "^1.0.1",
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "moment": "^2.22.2",
+    "tsify": "^4.0.0",
+    "typescript": "^2.9.2",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}
